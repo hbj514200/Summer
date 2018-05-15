@@ -20,7 +20,6 @@ public class IocCenter {
         if (clazzs == null) return;
 
         for (Class<?> clazz : clazzs) {
-            System.out.println(clazz.getCanonicalName());
             // 获取类上的注解
             Compontent compontent = clazz.getAnnotation(Compontent.class);
             if (compontent==null)       continue;

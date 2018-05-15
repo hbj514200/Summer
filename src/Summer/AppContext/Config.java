@@ -9,7 +9,7 @@ package Summer.AppContext;
 public class Config {
 
     //数据库相关
-    public static String DBName     = "General";
+    public static String DBName     = "EXAM";
     public static String DBurl      = "localhost";
     public static String topPackage = "xiaoxiang";
 

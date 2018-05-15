@@ -15,15 +15,15 @@ import java.util.Set;
 public class BlackCenter {
     private static Map<String, Object> map = new HashMap<>();
 
-    public void put(String name, Object object){
+    public static void put(String name, Object object){
         map.put(name, object);
     }
 
-    public Object get(String name){
+    public static Object get(String name){
         return map.get(name);
     }
 
-    public Set<String> getKeySet(){
+    public static Set<String> getKeySet(){
         return map.keySet();
     }
 

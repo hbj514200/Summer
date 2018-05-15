@@ -11,7 +11,7 @@ import java.lang.reflect.Modifier;
 public class Statement {
     private StringBuilder sql = new StringBuilder();
     private Map<String,String> whereMap = new LinkedHashMap<>();           //保存where语句的条件
-    private String groupString=" GROUP BY ";
+    private String orderString=" ORDER BY ";
     private String limitString=" LIMIT ";
     private Map<String,String> keyValueMap = new LinkedHashMap<>();        //属性名，属性要设为的值
 
@@ -26,21 +26,24 @@ public class Statement {
     public Statement and(String key, String tiaojian)  {   whereMap.put(key, tiaojian);                    return this;    }
 
     private void getWhereString(){
-        if (whereMap.size()!=0)                     sql.append("WHERE ");
+        if (whereMap.size()==0)                     return;
+        sql.append("WHERE ");
         for (String key : whereMap.keySet())        sql.append(key+whereMap.get(key)+" AND ");
         sql = new StringBuilder(sql.toString().replaceAll(", WHERE", " WHERE"));
         sql = new StringBuilder(sql.toString().substring(0,sql.toString().length()-4));
     }
 
-    public Statement groupBy(String key){
-        if (groupString.length()==" GROUP BY ".length())    groupString += key;
-        else                                                groupString += ","+key;
+    public Statement orderBy(String key){
+        if (orderString.length()==" ORDER BY ".length())    orderString += key;
+        else                                                orderString += ","+key;
         return this;
     }
 
     public List<Object> fetchInto(Class cls){
         List<Object> list = new LinkedList<>();
         getWhereString();
+        if (orderString.length()>" ORDER BY ".length())      sql.append(orderString);
+        if (limitString.length()>" LIMIT ".length())         sql.append(limitString);
         System.out.println("ORM执行sql语句:"+sql);
         ResultSet set = DBUtils.quuery(sql.toString());
         try {
@@ -78,7 +81,7 @@ public class Statement {
             sql = new StringBuilder( sql.toString().replaceAll(", \\)", "\\)") );
         }
         else if (sql.toString().startsWith("UPDATE")) {
-            for (String key : keyValueMap.keySet())     sql.append(key+"="+keyValueMap.get(key)+", ");
+            for (String key : keyValueMap.keySet())     sql.append(key+"='"+keyValueMap.get(key)+"', ");
             getWhereString();
         }
         else if (sql.toString().startsWith("DELETE")) {
@@ -86,9 +89,8 @@ public class Statement {
             getWhereString();
         }
 
-        if (groupString.length()>" GROUP BY ".length())      sql.append(groupString);
+        if (orderString.length()>" ORDER BY ".length())      sql.append(orderString);
         if (limitString.length()>" LIMIT ".length())         sql.append(limitString);
-        System.out.println(sql.toString());
         System.out.println("ORM执行sql语句:"+sql);
         return DBUtils.cao(sql.toString());
     }
